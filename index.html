@@ -78,11 +78,12 @@ function headerSizeCalculation () {
     if (selectors  !== null ) {
       selectors.forEach(function (selector) {
         selector.style.fontSize = userSizes[size] + userUnit;
-        var lineHeight = userLineHeightRatio * userSizes[size];
+        
         selector.innerText = size + " is " +  userSizes[size] + " and line height is " + lineHeight ;
         if ( userUnit !== 'px' ) {
-          selector.style.lineHeight = lineHeight;
+          selector.style.lineHeight = userLineHeightRatio;
         } else {
+          var lineHeight = userLineHeightRatio * userSizes[size];
           selector.style.lineHeight = lineHeight + userUnit;
         }
       })
