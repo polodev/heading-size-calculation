@@ -3,18 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <title>heading test</title>
+<style>
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+html{
+   font-size: 62.5%;
+}
+body{
+  font-family: 'Open Sans', sans-serif;
+   font-size:1.4rem;
+  line-height: 1em;
+}
+  
+.my-2 {
+  margin: 1em 0;
+}
+</style>
 </head>
 <body>
   <div>
-    <input type="number"  id="h1_font_size" placeholder="h1 font size" value="32">
-    <select id="font_unit">
-      <option value="px" selected>px</option>
-      <option value="em">em</option>
-      <option value="rem">rem</option>
-      <option value="%">%</option>
-    </select>
+    <div class="my-2">
+      <label for="h1_font_size">H1 Font Size</label>
+      <input type="number"  id="h1_font_size" placeholder="h1 font size" value="32">
+    </div>
+    <div class="my-2">
+      <label for="font_unit">Font Unit</label>
+      <select id="font_unit">
+        <option value="px" selected>px</option>
+        <option value="em">em</option>
+        <option value="rem">rem</option>
+        <option value="%">%</option>
+      </select>
+    </div>
+    <div class="my-2">
+      <label for="line_height_ratio"> Line Height Ratio </label>
+      <select id="line_height_ratio" placeholder="Line Height Ratio">
+        <option value="1.42857">1.42857 (bootstrap ratio)</option>
+        <option value="1.4">1.4 (html boiler plate)</option>
+        <option value="1.58">1.58 (Medium)</option>
+        <option value="1.5">1.5 (Zurb Foundation)</option>
+        <option value="1.618">1.618 (Golden Ratio)</option>
+      </select>
+    </div>
     <button id="calculate_button">Calculate</button>
   </div>
+  <h3>NB: paragraph style could be like h4</h3>
   <div class="changeable-header">
     <h1>This is h1</h1>
     <h2>This is h2</h2>
@@ -35,6 +67,7 @@ function headerSizeCalculation () {
   };
   var userH1Size = document.querySelector('#h1_font_size').value || 36;
   var userUnit = document.querySelector('#font_unit').value || 'px';
+  var userLineHeightRatio = document.querySelector('#line_height_ratio').value || '1.618';
   var userSizes = {};
   Object.keys(sizeRatios).forEach( function (size) {
     userSizes[size]  = userH1Size * sizeRatios[size] / 100;
@@ -45,7 +78,13 @@ function headerSizeCalculation () {
     if (selectors  !== null ) {
       selectors.forEach(function (selector) {
         selector.style.fontSize = userSizes[size] + userUnit;
-        selector.innerText = size + " is " +  userSizes[size];
+        var lineHeight = userLineHeightRatio * userSizes[size];
+        selector.innerText = size + " is " +  userSizes[size] + " and line height is " + lineHeight ;
+        if ( userUnit !== 'px' ) {
+          selector.style.lineHeight = lineHeight;
+        } else {
+          selector.style.lineHeight = lineHeight + userUnit;
+        }
       })
     }
   })
