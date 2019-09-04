@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>heading test</title>
+</head>
+<body>
+  <div>
+    <input type="number"  id="h1_font_size" placeholder="h1 font size" value="32">
+    <select id="font_unit">
+      <option value="px" selected>px</option>
+      <option value="em">em</option>
+      <option value="rem">rem</option>
+      <option value="%">%</option>
+    </select>
+    <button id="calculate_button">Calculate</button>
+  </div>
+  <div class="changeable-header">
+    <h1>This is h1</h1>
+    <h2>This is h2</h2>
+    <h3>This is h3</h3>
+    <h4>This is h4</h4>
+    <h5>This is h5</h5>
+    <h6>This is h6</h6>
+  </div>
+<script>
+function headerSizeCalculation () {
+  var sizeRatios = {
+    h1: 100,
+    h2: 75,
+    h3: 58.5,
+    h4: 50,
+    h5: 41.5,
+    h6: 33.5,
+  };
+  var userH1Size = document.querySelector('#h1_font_size').value || 36;
+  var userUnit = document.querySelector('#font_unit').value || 'px';
+  var userSizes = {};
+  Object.keys(sizeRatios).forEach( function (size) {
+    userSizes[size]  = userH1Size * sizeRatios[size] / 100;
+  })
+
+  Object.keys(userSizes).forEach( function (size) {
+    var selectors = document.querySelectorAll('.changeable-header ' + size);
+    if (selectors  !== null ) {
+      selectors.forEach(function (selector) {
+        selector.style.fontSize = userSizes[size] + userUnit;
+        selector.innerText = size + " is " +  userSizes[size];
+      })
+    }
+  })
+}
+headerSizeCalculation();
+document.querySelector('#calculate_button').addEventListener('click', headerSizeCalculation);
+document.querySelector('#h1_font_size').addEventListener('keydown', function (event) {
+  if (event.keyCode == 13) {
+    headerSizeCalculation();
+  }
+})
+</script>
+</body>
+</html>
