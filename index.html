@@ -27,22 +27,11 @@ body{
     </div>
     <div class="my-2">
       <label for="font_unit">Font Unit</label>
-      <select id="font_unit">
-        <option value="px" selected>px</option>
-        <option value="em">em</option>
-        <option value="rem">rem</option>
-        <option value="%">%</option>
-      </select>
+      <select id="font_unit"></select>
     </div>
     <div class="my-2">
       <label for="line_height_ratio"> Line Height Ratio </label>
-      <select id="line_height_ratio" placeholder="Line Height Ratio">
-        <option value="1.42857">1.42857 (bootstrap ratio)</option>
-        <option value="1.4">1.4 (html boiler plate)</option>
-        <option value="1.58">1.58 (Medium)</option>
-        <option value="1.5">1.5 (Zurb Foundation)</option>
-        <option value="1.618">1.618 (Golden Ratio)</option>
-      </select>
+      <select id="line_height_ratio" placeholder="Line Height Ratio"></select>
     </div>
     <button id="calculate_button">Calculate</button>
   </div>
@@ -56,15 +45,56 @@ body{
     <h6>This is h6</h6>
   </div>
 <script>
+/**
+ * configuration 
+ */
+var lineHeightRatios = {
+  "1.42857" : "1.42857 (bootstrap ratio)",
+  "1.4" : "1.4 (html boiler plate)",
+  "1.58" : "1.58 (Medium)",
+  "1.5" : "1.5 (Zurb Foundation)",
+  "1.618" : "1.618 (Golden Ratio)",
+};
+var sizeRatios = {
+  h1: 100,
+  h2: 75,
+  h3: 58.5,
+  h4: 50,
+  h5: 41.5,
+  h6: 33.5,
+};
+var fontUnits = {
+  "px": "px",
+  "em": "em",
+  "rem": "rem",
+  "%": "%",
+}
+
+/**
+ * function for generating fontUnit, lineHeight & calculation 
+ */
+
+function generateFontUnitHtml () {
+  var html = "";
+  Object.keys(fontUnits).forEach(function (unit) {
+    var value = fontUnits[unit];
+    html +=` 
+      <option value="${unit}">${value}</option>
+    `;
+  })
+  document.querySelector('#font_unit').innerHTML = html;
+}
+function generateLineHeightRationHtml () {
+  var html = "";
+  Object.keys(lineHeightRatios).forEach(function (ratio) {
+    var value = lineHeightRatios[ratio];
+    html +=` 
+      <option value="${ratio}">${value}</option>
+    `;
+  })
+  document.querySelector('#line_height_ratio').innerHTML = html;
+}
 function headerSizeCalculation () {
-  var sizeRatios = {
-    h1: 100,
-    h2: 75,
-    h3: 58.5,
-    h4: 50,
-    h5: 41.5,
-    h6: 33.5,
-  };
   var userH1Size = document.querySelector('#h1_font_size').value || 36;
   var userUnit = document.querySelector('#font_unit').value || 'px';
   var userLineHeightRatio = document.querySelector('#line_height_ratio').value || '1.618';
@@ -78,18 +108,25 @@ function headerSizeCalculation () {
     if (selectors  !== null ) {
       selectors.forEach(function (selector) {
         selector.style.fontSize = userSizes[size] + userUnit;
-        
-        selector.innerText = size + " is " +  userSizes[size] + " and line height is " + lineHeight ;
+        var lineHeightText  = Number(userLineHeightRatio).toFixed(2);
         if ( userUnit !== 'px' ) {
-          selector.style.lineHeight = userLineHeightRatio;
+          selector.style.lineHeight = Number(userLineHeightRatio).toFixed(2);
         } else {
-          var lineHeight = userLineHeightRatio * userSizes[size];
-          selector.style.lineHeight = lineHeight + userUnit;
+          // in case of pixel
+          var lineHeightPx = Number(userLineHeightRatio * userSizes[size]).toFixed(2) + userUnit;
+          lineHeightText = Number(userLineHeightRatio).toFixed(2) + " or " + lineHeightPx
+          selector.style.lineHeight =  lineHeightPx;
         }
+
+        selector.innerText = size + " is " +  userSizes[size] + " and line height is " + lineHeightText ;
+
+
       })
     }
   })
 }
+generateLineHeightRationHtml();
+generateFontUnitHtml();
 headerSizeCalculation();
 document.querySelector('#calculate_button').addEventListener('click', headerSizeCalculation);
 document.querySelector('#h1_font_size').addEventListener('keydown', function (event) {
